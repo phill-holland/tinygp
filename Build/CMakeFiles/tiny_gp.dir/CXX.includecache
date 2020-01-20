@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/phill/Documents/Git/tiny_gp/genetic.h
+iostream
+-
+random
+-
+math.h
+-
+string
+-
+bits/stdc++.h
+-
+schema.h
+/Users/phill/Documents/Git/tiny_gp/schema.h
+
+/Users/phill/Documents/Git/tiny_gp/main.cpp
+iostream
+-
+string
+-
+genetic.h
+/Users/phill/Documents/Git/tiny_gp/genetic.h
+
+/Users/phill/Documents/Git/tiny_gp/schema.h
+random
+-
+
