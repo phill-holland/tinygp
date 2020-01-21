@@ -4,13 +4,14 @@
 
 int main(int argc, char *argv[])
 {
-    std::string filename = "sin-data.dat";
+    std::string filename = "sin-data.txt";
     
     tiny_gp *gp = new tiny_gp(filename);
-    
-    //gp->evolve();
+    if(gp != NULL)
+    {
+        gp->evolve();
 
-    delete gp;
-
+        delete gp;
+    }
     return 0;
 }

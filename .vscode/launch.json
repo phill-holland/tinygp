@@ -8,14 +8,15 @@
             "name": "g++-7 build and debug active file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/Build/tiny_gp",
+            "program": "${workspaceRoot}/Build/tiny_gp",
+            "launchCompleteCommand": "exec-run",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceRoot}",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "lldb",
-            "preLaunchTask": "g++-7 build active file"
+            "MIMode": "lldb",            
+            "preLaunchTask": "make"
         }
     ]
 }

@@ -1,5 +1,4 @@
 #include "schema.h"
-#include <random>
 #include <string.h>
 #include <iostream>
 
@@ -15,6 +14,7 @@ void schema::reset(int total)
 
     clear();
 
+    //std::cout << "schema:;reset\n";
     init = true;
 }
 
@@ -61,21 +61,27 @@ double schema::fitness(int fitnesscases, int varnumber, double *x, double *targe
     int i=0, len;
     double result, fit = 0.0;
 
+//std::cout << "here fitness a\n";
     //len = traverse(prog, 0);
     len = traverse(0);
+    std::cout << "len " << len << "\n";
+    //std::cout << "here fitness b\n";
     for(i=0;i<fitnesscases;i++)
     {
+        //std::cout << "here fitness c\n";
         for(int j=0;j<varnumber;j++)
         {
             x[j] = targets[i,j];                
         }
-
+//std::cout << "here fitness d\n";
         //program = source.program;
         PC = 0;
+        //std::cout << "here fitness e\n";
         result = run(x);
-        fit += abs(result = targets[i,varnumber]);
+        //std::cout << "here fitness f\n";
+        fit += abs(result - targets[i,varnumber]);
     }
-
+std::cout << "here fitness g\n";
     return (-fit);
 }
 
@@ -84,27 +90,48 @@ schema schema::crossover(schema &parent1, schema &parent2)
     int xo1start, xo1end, xo2start, xo2end;
     schema offspring;
 
+    std::cout << "corssover a\n";
     int len1 = parent1.traverse(0);
     int len2 = parent2.traverse(0);
     int lenoff;
-
+std::cout << "corssover b\n";
     std::uniform_int_distribution<int> rand1{ 0, len1 };
     std::uniform_int_distribution<int> rand2{ 0, len2 };
 
     xo1start = rand1(generator);
     xo1end = parent1.traverse(xo1start);
+    if(xo1end > len1) xo1end = len1;
 
     xo2start = rand2(generator);
     xo2end = parent2.traverse(xo2start);
+    if(xo2end > len2) xo2end = len2;
 
+std::cout << "corssover c\n";
     lenoff = xo1start + (xo2end - xo2start) + (len1 - xo1end);
 
     offspring.length = lenoff;
+
+std::cout << "corssover d " << lenoff << " len1 " << len1 << " len2 " << len2 << "\n";
+
+std::cout << "xo1start " << xo1start << "\n"; 
+std::cout << "xo1end " << xo1end << "\n"; 
+
+std::cout << "xo2start " << xo2start << "\n"; 
+std::cout << "xo12nd " << xo2end << "\n"; 
+
+std::cout << "xo2end - xo2start " << (xo2end - xo2start) << "\n";
+std::cout << "xo1start + (xo2end - xo2start)" << (xo1start + (xo2end - xo2start)) << "\n";
+std::cout << "len1 - xo1end " << (len1 - xo1end) << "\n";
 
     memcpy(offspring.program, parent1.program, xo1start);
     memcpy(&offspring.program[xo1start], &parent2.program[xo2start], xo2end - xo2start);
     memcpy(&offspring.program[xo1start + (xo2end - xo2start)], &parent1.program[xo1end], len1 - xo1end);
 
+std::cout << "corssover e \n";
+
+    int lenny = offspring.traverse(0);
+    std::cout << "lenny " << lenny << "\n";
+    
     return offspring;
 }
 
@@ -119,7 +146,7 @@ schema schema::mutation(schema &parent, int varnumber, double pmut)
 
     for(i=0;i<len;++i)
     {
-        if(rand1(generator) , pmut)
+        if(rand1(generator) < pmut)
         {
             mutsite = i;
             if(parentcopy.program[mutsite] < FSET_START)
@@ -135,10 +162,10 @@ schema schema::mutation(schema &parent, int varnumber, double pmut)
                     case SUB:
                     case MUL:
                     case DIV:
-                    {
+                    
                         std::uniform_int_distribution<int> rand3{ 0, FSET_END - FSET_START + 1 };
                         parentcopy.program[mutsite] = (char)rand3(generator) + FSET_START;
-                    }
+                    
                 }
             }
         }
@@ -149,15 +176,21 @@ schema schema::mutation(schema &parent, int varnumber, double pmut)
 
 int schema::traverse(int buffercount)
 {
+    if(buffercount >=max) 
+    {
+        std::cout << "traversed maxxed\n";
+        return 0;
+    }
+
     if(program[buffercount] < FSET_START)
-        return ++buffercount;
+        return buffercount+1;
 
     switch(program[buffercount]) {
         case ADD: 
         case SUB:
         case MUL:
         case DIV:
-        return (traverse(traverse(++buffercount)));
+        return (traverse(traverse(buffercount+1)));
     }
 
     return 0;
@@ -243,16 +276,20 @@ int schema::print_indiv(int buffercounter, int varnumber, double *x)
 
 void schema::copy(const schema &source)
 {
-    memcpy(program, source.program, max);
+    memcpy(program, source.program, source.max);
     length = source.length;
+    max = source.max;
 }
 
 void schema::makeNull()
 {
+    //std::cout << "schame:: makeNull\n";
     program = NULL;
 }
 
 void schema::cleanup()
 {
-    if(program != NULL) delete program;
+    //std::cout << "schema::cleana\n";
+    if(program != NULL) delete[] program;
+    //std::cout << "schema::cleanb\n";
 }

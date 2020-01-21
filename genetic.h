@@ -2,7 +2,6 @@
 #include <random>
 #include <math.h>
 #include <string>
-#include <bits/stdc++.h>
 #include "schema.h"
 
 #ifndef GENETIC
@@ -16,9 +15,9 @@ public:
     double *fitness;
     //char **population;
     schema *population;
-    char *buffer;
+    //char *buffer;
 
-    static const int ADD = 100;
+    static const int ADD = 110;
     static const int SUB = 111;
     static const int MUL = 112;
     static const int DIV = 113;
@@ -27,6 +26,7 @@ public:
     static const int FSET_END = DIV;
 
     double x[FSET_START];
+    //double *x;
 
     double minrandom, maxrandom;
     
@@ -96,9 +96,12 @@ protected:
 
     void cleanup()
     {
-        if(targets != NULL) delete targets;
-        if(population != NULL) delete population;
-        if(fitness != NULL) delete fitness;
+        std::cout << "clean a\n";
+        if(targets != NULL) delete[] targets;
+        std::cout << "clean b\n";
+        if(population != NULL) delete[] population;
+        std::cout << "clean c\n";
+        if(fitness != NULL) delete[] fitness;
     }
 };
 

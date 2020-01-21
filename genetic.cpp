@@ -1,5 +1,6 @@
 #include "genetic.h"
 #include <fstream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -10,7 +11,7 @@ std::mt19937_64 tiny_gp::generator(std::random_device{}());
 
 void tiny_gp::reset(std::string filename)
 {
-    buffer = new char[MAX_LEN];
+    //buffer = new char[MAX_LEN];
 
     // ****
 
@@ -30,6 +31,8 @@ void tiny_gp::reset(std::string filename)
 
     population = new schema[POPSIZE];
     if(population == NULL) return;
+    
+    //charreturn;
 
     setup_fitness(filename);
     randomize(POPSIZE, DEPTH, fitness);
@@ -39,6 +42,8 @@ void tiny_gp::reset(std::string filename)
     {
         x[i] = (maxrandom - minrandom) * rand1(generator) + minrandom;
     }
+
+    std::cout << "monkey\n";
 }
 
 
@@ -104,10 +109,11 @@ void tiny_gp::setup_fitness(string filename)
     std::istringstream iss(line);
     std::vector<std::string> tokens(std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>());
 
+    std::cout << "filename " << filename << "\n";
     std::vector<std::string>::iterator it = tokens.begin();
 
     varnumber = std::stoi(it[0]);
-    randomnumber = std::stoi(it[1]);
+    randomnumber = std::stoi(it[1]); 
     minrandom = std::stod(it[2]);
     maxrandom = std::stod(it[3]);
     fitnesscases = std::stoi(it[4]);
@@ -120,13 +126,20 @@ void tiny_gp::setup_fitness(string filename)
          std::getline(in, line);
          iss = std::istringstream(line);
          tokens = std::vector<std::string>(std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>());
+         j = 0;
          for(it = tokens.begin();it != tokens.end(); ++it) 
          {
-             targets[i,j] = std::stod(*it);
+             targets[i,j++] = std::stod(*it);
+
+             std::cout << *it << ",";
          }
+
+         std::cout << "\n";
     }
     
     in.close();
+
+    std::cout << "moo\n";
 }
 
 /*
@@ -279,7 +292,7 @@ void tiny_gp::stats(double *fitness, schema *pop, int gen)
     cout << " Avg Size=" << avg_length << " Best Individual: " ;
     //print_indiv(population[best], 0);
     population[best].print_indiv(0,varnumber, x);
-    cout << "\n";
+    cout << "here\n";
 }
 
 int tiny_gp::tournament(double *fitness, int tsize)
@@ -417,34 +430,50 @@ void tiny_gp::evolve()
     stats(fitness, population, 0);
     for(gen = 1; gen < GENERATIONS; ++gen) 
     {
+        std::cout << "gen " << gen << "\n";
         if(fbestpop > -1e-5)
         {
             cout << "PROBLEM SOLVED BITCHES\n";
             return;
         }
 
+//std::cout << "here a\n";
         for(indivs = 0; indivs < POPSIZE; ++indivs)
         {
+            //std::cout << "here b " << indivs << "\n";
             // erm
             if(rand1(generator) > CROSSOVER_PROB)
             {
+                std::cout << "here c\n";
                 parent1 = tournament(fitness,TSIZE);
+                //std::cout << "here d\n";
                 parent2 = tournament(fitness, TSIZE);
+                //std::cout << "here e\n";
                 newind = schema::crossover(population[parent1], population[parent2]);
+                //std::cout << "here f\n";
             }
             else
             {
+                std::cout << "here g\n";
                 parent = tournament(fitness, TSIZE);
+                std::cout << "here h\n";
                 newind = schema::mutation(population[parent], varnumber, PMUT_PER_NODE);
+                std::cout << "here i\n";
             }
-
+           // std::cout << "here j " << fitnesscases << " " << varnumber << " " << "\n";
+            //fitness[i] = population[i].fitness(fitnesscases, varnumber, x, targets);
             newfit = newind.fitness(fitnesscases, varnumber, x, targets);
+            std::cout << "here k\n";
             offspring = negative_tournament(fitness, TSIZE);
+            std::cout << "here l\n";
             population[offspring] = newind;
+           // std::cout << "here n\n";
             fitness[offspring] = newfit;
+           // std::cout << "here m\n";
         }
 
         stats(fitness,population,gen);
+        cout << "what\n";
     }
     cout << "NOT SOLVED, CALL THE BITCHES\n";
 }

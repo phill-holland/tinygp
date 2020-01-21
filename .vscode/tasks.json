@@ -1,20 +1,45 @@
 {
+    "version":"2.0.0",
+    "command":"sh",
+    "args":["-c"],
     "tasks": [
         {
             "type": "shell",
-            "label": "g++-7 build active file",
-            "command": "/usr/local/bin/g++-7",
+            "label": "cmake",
+            "command": "cmake",
             "args": [
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "../",
             ],
             "options": {
-                "cwd": "/usr/local/bin"
+                "cwd": "${workspaceRoot}/Build"
+            },
+            "group": {
+                "kind":"build",
+                "isDefault": true
             },
             "problemMatcher": []
-        }
-    ],
-    "version": "2.0.0"
+        },
+        {
+            "type": "shell",
+            "label": "make",
+            "command": "make",
+            "options": {
+                "cwd": "${workspaceRoot}/Build"
+            },
+            "dependsOn":[ "cmake" ],
+            "group":"build",
+            "problemMatcher": []
+        },
+        {
+            "type":"shell",
+            "label":"build and run",
+            "command":"./tiny_gp",
+            "options": {
+                "cwd": "${workspaceRoot}/Build"
+            },
+            "dependsOn":[ "make" ],
+            "group":"build",
+            "problemMatcher": []
+        },
+    ]
 }

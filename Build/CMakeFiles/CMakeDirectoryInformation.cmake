@@ -3,7 +3,7 @@
 
 # Relative path conversion top directories.
 set(CMAKE_RELATIVE_PATH_TOP_SOURCE "/Users/phill/Documents/Git/tiny_gp")
-set(CMAKE_RELATIVE_PATH_TOP_BINARY "/Users/phill/Documents/Git/tiny_gp/build")
+set(CMAKE_RELATIVE_PATH_TOP_BINARY "/Users/phill/Documents/Git/tiny_gp/Build")
 
 # Force unix paths in dependencies.
 set(CMAKE_FORCE_UNIX_PATHS 1)

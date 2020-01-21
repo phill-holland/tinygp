@@ -6,6 +6,14 @@
 
 #IncludeRegexTransform: 
 
+/Users/phill/Documents/Git/tiny_gp/genetic.cpp
+genetic.h
+/Users/phill/Documents/Git/tiny_gp/genetic.h
+fstream
+-
+bits/stdc++.h
+-
+
 /Users/phill/Documents/Git/tiny_gp/genetic.h
 iostream
 -
@@ -15,18 +23,8 @@ math.h
 -
 string
 -
-bits/stdc++.h
--
 schema.h
 /Users/phill/Documents/Git/tiny_gp/schema.h
-
-/Users/phill/Documents/Git/tiny_gp/main.cpp
-iostream
--
-string
--
-genetic.h
-/Users/phill/Documents/Git/tiny_gp/genetic.h
 
 /Users/phill/Documents/Git/tiny_gp/schema.h
 random

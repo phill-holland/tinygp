@@ -46,7 +46,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /Users/phill/Documents/Git/tiny_gp
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/phill/Documents/Git/tiny_gp/build
+CMAKE_BINARY_DIR = /Users/phill/Documents/Git/tiny_gp/Build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/tiny_gp.dir/depend.make
@@ -59,42 +59,42 @@ include CMakeFiles/tiny_gp.dir/flags.make
 
 CMakeFiles/tiny_gp.dir/schema.cpp.o: CMakeFiles/tiny_gp.dir/flags.make
 CMakeFiles/tiny_gp.dir/schema.cpp.o: ../schema.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/phill/Documents/Git/tiny_gp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/tiny_gp.dir/schema.cpp.o"
-	/usr/local/bin/g++-9  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tiny_gp.dir/schema.cpp.o -c /Users/phill/Documents/Git/tiny_gp/schema.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/phill/Documents/Git/tiny_gp/Build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/tiny_gp.dir/schema.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tiny_gp.dir/schema.cpp.o -c /Users/phill/Documents/Git/tiny_gp/schema.cpp
 
 CMakeFiles/tiny_gp.dir/schema.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tiny_gp.dir/schema.cpp.i"
-	/usr/local/bin/g++-9 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/phill/Documents/Git/tiny_gp/schema.cpp > CMakeFiles/tiny_gp.dir/schema.cpp.i
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/phill/Documents/Git/tiny_gp/schema.cpp > CMakeFiles/tiny_gp.dir/schema.cpp.i
 
 CMakeFiles/tiny_gp.dir/schema.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tiny_gp.dir/schema.cpp.s"
-	/usr/local/bin/g++-9 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/phill/Documents/Git/tiny_gp/schema.cpp -o CMakeFiles/tiny_gp.dir/schema.cpp.s
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/phill/Documents/Git/tiny_gp/schema.cpp -o CMakeFiles/tiny_gp.dir/schema.cpp.s
 
 CMakeFiles/tiny_gp.dir/genetic.cpp.o: CMakeFiles/tiny_gp.dir/flags.make
 CMakeFiles/tiny_gp.dir/genetic.cpp.o: ../genetic.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/phill/Documents/Git/tiny_gp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/tiny_gp.dir/genetic.cpp.o"
-	/usr/local/bin/g++-9  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tiny_gp.dir/genetic.cpp.o -c /Users/phill/Documents/Git/tiny_gp/genetic.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/phill/Documents/Git/tiny_gp/Build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/tiny_gp.dir/genetic.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tiny_gp.dir/genetic.cpp.o -c /Users/phill/Documents/Git/tiny_gp/genetic.cpp
 
 CMakeFiles/tiny_gp.dir/genetic.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tiny_gp.dir/genetic.cpp.i"
-	/usr/local/bin/g++-9 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/phill/Documents/Git/tiny_gp/genetic.cpp > CMakeFiles/tiny_gp.dir/genetic.cpp.i
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/phill/Documents/Git/tiny_gp/genetic.cpp > CMakeFiles/tiny_gp.dir/genetic.cpp.i
 
 CMakeFiles/tiny_gp.dir/genetic.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tiny_gp.dir/genetic.cpp.s"
-	/usr/local/bin/g++-9 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/phill/Documents/Git/tiny_gp/genetic.cpp -o CMakeFiles/tiny_gp.dir/genetic.cpp.s
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/phill/Documents/Git/tiny_gp/genetic.cpp -o CMakeFiles/tiny_gp.dir/genetic.cpp.s
 
 CMakeFiles/tiny_gp.dir/main.cpp.o: CMakeFiles/tiny_gp.dir/flags.make
 CMakeFiles/tiny_gp.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/phill/Documents/Git/tiny_gp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/tiny_gp.dir/main.cpp.o"
-	/usr/local/bin/g++-9  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tiny_gp.dir/main.cpp.o -c /Users/phill/Documents/Git/tiny_gp/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/phill/Documents/Git/tiny_gp/Build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/tiny_gp.dir/main.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tiny_gp.dir/main.cpp.o -c /Users/phill/Documents/Git/tiny_gp/main.cpp
 
 CMakeFiles/tiny_gp.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tiny_gp.dir/main.cpp.i"
-	/usr/local/bin/g++-9 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/phill/Documents/Git/tiny_gp/main.cpp > CMakeFiles/tiny_gp.dir/main.cpp.i
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/phill/Documents/Git/tiny_gp/main.cpp > CMakeFiles/tiny_gp.dir/main.cpp.i
 
 CMakeFiles/tiny_gp.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tiny_gp.dir/main.cpp.s"
-	/usr/local/bin/g++-9 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/phill/Documents/Git/tiny_gp/main.cpp -o CMakeFiles/tiny_gp.dir/main.cpp.s
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/phill/Documents/Git/tiny_gp/main.cpp -o CMakeFiles/tiny_gp.dir/main.cpp.s
 
 # Object files for target tiny_gp
 tiny_gp_OBJECTS = \
@@ -110,7 +110,7 @@ tiny_gp: CMakeFiles/tiny_gp.dir/genetic.cpp.o
 tiny_gp: CMakeFiles/tiny_gp.dir/main.cpp.o
 tiny_gp: CMakeFiles/tiny_gp.dir/build.make
 tiny_gp: CMakeFiles/tiny_gp.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/phill/Documents/Git/tiny_gp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable tiny_gp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/phill/Documents/Git/tiny_gp/Build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable tiny_gp"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tiny_gp.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -123,6 +123,6 @@ CMakeFiles/tiny_gp.dir/clean:
 .PHONY : CMakeFiles/tiny_gp.dir/clean
 
 CMakeFiles/tiny_gp.dir/depend:
-	cd /Users/phill/Documents/Git/tiny_gp/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/phill/Documents/Git/tiny_gp /Users/phill/Documents/Git/tiny_gp /Users/phill/Documents/Git/tiny_gp/build /Users/phill/Documents/Git/tiny_gp/build /Users/phill/Documents/Git/tiny_gp/build/CMakeFiles/tiny_gp.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/phill/Documents/Git/tiny_gp/Build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/phill/Documents/Git/tiny_gp /Users/phill/Documents/Git/tiny_gp /Users/phill/Documents/Git/tiny_gp/Build /Users/phill/Documents/Git/tiny_gp/Build /Users/phill/Documents/Git/tiny_gp/Build/CMakeFiles/tiny_gp.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/tiny_gp.dir/depend
 

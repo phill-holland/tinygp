@@ -5,7 +5,7 @@
 
 class schema
 {
-    static const int ADD = 100;
+    static const int ADD = 110;
     static const int SUB = 111;
     static const int MUL = 112;
     static const int DIV = 113;
@@ -25,7 +25,7 @@ class schema
 
 public:
     schema(int total = MAX) { makeNull(); reset(total); }
-    schema(const schema &source) { copy(source); }
+    schema(const schema &source) { makeNull(); reset(source.max); copy(source); }
     ~schema() { cleanup(); }
 
     bool initalised() { return init; }
@@ -48,6 +48,9 @@ public:
     int print_indiv(int buffercounter, int varnumber, double *x);
 
     void copy(const schema &source);
+
+public:
+    schema operator=(const schema &src) { clear(); copy(src); return *this; }
 
 protected:
     void makeNull();
