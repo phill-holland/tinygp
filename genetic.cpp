@@ -34,16 +34,18 @@ void tiny_gp::reset(std::string filename)
     
     //charreturn;
 
+    for(int i=0;i<FSET_START;++i)
+    {
+        x[i] = (maxrandom - minrandom) * rand1(generator) + minrandom;
+        std::cout << "init " << x[i] << "\n";
+    }
+
     setup_fitness(filename);
     randomize(POPSIZE, DEPTH, fitness);
     //population = create_random_pop(POPSIZE, DEPTH, fitness);
 
-    for(int i=0;i<FSET_START;++i)
-    {
-        x[i] = (maxrandom - minrandom) * rand1(generator) + minrandom;
-    }
 
-    std::cout << "monkey\n";
+    //std::cout << "monkey\n";
 }
 
 
@@ -52,7 +54,11 @@ void tiny_gp::randomize(int n, int depth, double *fitness)
     for(int i=0;i<n;++i)
     {
         population[i].create(depth,varnumber,randomnumber);
+        //population[i].print();
+
         fitness[i] = population[i].fitness(fitnesscases, varnumber, x, targets);
+
+       // std::cout << "fitness " << fitness[i] << "\n";
     }
 }
 /*
@@ -139,7 +145,7 @@ void tiny_gp::setup_fitness(string filename)
     
     in.close();
 
-    std::cout << "moo\n";
+   // std::cout << "moo\n";
 }
 
 /*
@@ -292,7 +298,7 @@ void tiny_gp::stats(double *fitness, schema *pop, int gen)
     cout << " Avg Size=" << avg_length << " Best Individual: " ;
     //print_indiv(population[best], 0);
     population[best].print_indiv(0,varnumber, x);
-    cout << "here\n";
+   // cout << "here\n";
 }
 
 int tiny_gp::tournament(double *fitness, int tsize)
@@ -430,7 +436,7 @@ void tiny_gp::evolve()
     stats(fitness, population, 0);
     for(gen = 1; gen < GENERATIONS; ++gen) 
     {
-        std::cout << "gen " << gen << "\n";
+        //std::cout << "gen " << gen << "\n";
         if(fbestpop > -1e-5)
         {
             cout << "PROBLEM SOLVED BITCHES\n";
@@ -444,31 +450,39 @@ void tiny_gp::evolve()
             // erm
             if(rand1(generator) > CROSSOVER_PROB)
             {
-                std::cout << "here c\n";
+                //std::cout << "here c\n";
                 parent1 = tournament(fitness,TSIZE);
                 //std::cout << "here d\n";
                 parent2 = tournament(fitness, TSIZE);
-                //std::cout << "here e\n";
+                //std::cout << "p1,p2 " << parent1 << " " << parent2 << "\n";
+               // std::cout << "here e " << population[parent1].total() << " " << population[parent2].total() << "\n";                
                 newind = schema::crossover(population[parent1], population[parent2]);
-                //std::cout << "here f\n";
+
+                //return;
+               // std::cout << "here f\n";
             }
             else
             {
-                std::cout << "here g\n";
+                //std::cout << "here g\n";
                 parent = tournament(fitness, TSIZE);
-                std::cout << "here h\n";
+                //std::cout << "here h\n";
                 newind = schema::mutation(population[parent], varnumber, PMUT_PER_NODE);
-                std::cout << "here i\n";
+                //return;
+                //std::cout << "here i\n";
             }
-           // std::cout << "here j " << fitnesscases << " " << varnumber << " " << "\n";
-            //fitness[i] = population[i].fitness(fitnesscases, varnumber, x, targets);
-            newfit = newind.fitness(fitnesscases, varnumber, x, targets);
-            std::cout << "here k\n";
-            offspring = negative_tournament(fitness, TSIZE);
-            std::cout << "here l\n";
-            population[offspring] = newind;
-           // std::cout << "here n\n";
-            fitness[offspring] = newfit;
+
+            if(newind.total() > 0)
+            {
+                //std::cout << "here j " << fitnesscases << " " << varnumber << " " << "\n";
+                    //fitness[i] = population[i].fitness(fitnesscases, varnumber, x, targets);
+                    newfit = newind.fitness(fitnesscases, varnumber, x, targets);
+                // std::cout << "here k\n";
+                    offspring = negative_tournament(fitness, TSIZE);
+                //  std::cout << "here l\n";
+                    population[offspring] = newind;
+                // std::cout << "here n\n";
+                    fitness[offspring] = newfit;
+            }
            // std::cout << "here m\n";
         }
 

@@ -40,11 +40,14 @@ public:
     static schema crossover(schema &parent1, schema &parent2);
     static schema mutation(schema &parent, int varnumber, double pmut);
 
+    int total() { return length; }
     
 //protected:
     int traverse(int buffercount);
-    int grow(int pos, int max, int depth, int varnumber, int randnumber);
+    int grow(int pos, int depth, int varnumber, int randnumber);
+    //int grow(int pos, int max, int depth, int varnumber, int randnumber);
     
+    void print();
     int print_indiv(int buffercounter, int varnumber, double *x);
 
     void copy(const schema &source);

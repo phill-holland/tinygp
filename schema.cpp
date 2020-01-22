@@ -26,17 +26,23 @@ void schema::clear()
 
 void schema::create(int depth, int varnumber, int randnumber)
 {
-    int len = grow(0,MAX,depth,varnumber, randnumber);
-
-    while(len < 0)
+    clear();
+    length = grow(0, depth, varnumber, randnumber);
+    while(length <= 0)
     {
-        len = grow(0,MAX,depth, varnumber, randnumber);
+        length = grow(0, depth, varnumber, randnumber);
     }
+
+    //std::cout << "create len " << length << "\n";
+   // while(!grow(varnumber, randnumber));
 }
+/*
 double schema::run(double *x)
 {
     char primitive = program[PC++];
     
+    std::cout << "PC " << PC << " prim " << ((int)primitive) << std::endl;
+
     if(primitive < FSET_START)
         return (x[primitive]);
     
@@ -55,7 +61,31 @@ double schema::run(double *x)
 
     return 0.0;
 }
+*/
+  double schema::run(double *x) { /* Interpreter */
+      //output();
+    char primitive = program[PC++];
+    if ( primitive < FSET_START )
+    {
+        //std::cout << "prim " << ((int)primitive) << " " << x[primitive] << "\n";        
+        return(x[primitive]);
+    }
 
+    switch ( primitive ) {
+      case ADD : return( run(x) + run(x) );
+      case SUB : return( run(x) - run(x) );
+      case MUL : return( run(x) * run(x) );
+      case DIV : { 
+        double num = run(x), den = run(x);
+        if ( abs( den ) <= 0.001 ) 
+          return( num );
+        else 
+          return( num / den );
+        }
+      }
+    return( 0.0 ); // should never get here
+  }
+          
 double schema::fitness(int fitnesscases, int varnumber, double *x, double *targets)//char *prog)
 {
     int i=0, len;
@@ -64,37 +94,42 @@ double schema::fitness(int fitnesscases, int varnumber, double *x, double *targe
 //std::cout << "here fitness a\n";
     //len = traverse(prog, 0);
     len = traverse(0);
-    std::cout << "len " << len << "\n";
+    //std::cout << "len " << len << "\n";
     //std::cout << "here fitness b\n";
     for(i=0;i<fitnesscases;i++)
     {
         //std::cout << "here fitness c\n";
         for(int j=0;j<varnumber;j++)
         {
-            x[j] = targets[i,j];                
+            x[j] = targets[i,j];           
+           // std::cout << "x[j] " << j << " " << x[j] << "\n";     
         }
 //std::cout << "here fitness d\n";
         //program = source.program;
         PC = 0;
         //std::cout << "here fitness e\n";
         result = run(x);
-        //std::cout << "here fitness f\n";
+        //std::cout << "here fitness " << result << "\n";
         fit += abs(result - targets[i,varnumber]);
     }
-std::cout << "here fitness g\n";
+//std::cout << "here fitness g\n";
     return (-fit);
 }
 
 schema schema::crossover(schema &parent1, schema &parent2)
 {
+    
     int xo1start, xo1end, xo2start, xo2end;
     schema offspring;
 
-    std::cout << "corssover a\n";
-    int len1 = parent1.traverse(0);
-    int len2 = parent2.traverse(0);
+if((parent1.total()==0)||(parent2.total()==0)) return offspring;
+    
+  //  std::cout << "corssover a\n";
+    int len1 = parent1.traverse(0);//total();//traverse(0);
+    int len2 = parent2.traverse(0);//total();//traverse(0);
     int lenoff;
-std::cout << "corssover b\n";
+    
+//std::cout << "corssover b\n";
     std::uniform_int_distribution<int> rand1{ 0, len1 };
     std::uniform_int_distribution<int> rand2{ 0, len2 };
 
@@ -106,11 +141,12 @@ std::cout << "corssover b\n";
     xo2end = parent2.traverse(xo2start);
     if(xo2end > len2) xo2end = len2;
 
-std::cout << "corssover c\n";
+//std::cout << "corssover c\n";
     lenoff = xo1start + (xo2end - xo2start) + (len1 - xo1end);
 
     offspring.length = lenoff;
 
+/*
 std::cout << "corssover d " << lenoff << " len1 " << len1 << " len2 " << len2 << "\n";
 
 std::cout << "xo1start " << xo1start << "\n"; 
@@ -122,24 +158,51 @@ std::cout << "xo12nd " << xo2end << "\n";
 std::cout << "xo2end - xo2start " << (xo2end - xo2start) << "\n";
 std::cout << "xo1start + (xo2end - xo2start)" << (xo1start + (xo2end - xo2start)) << "\n";
 std::cout << "len1 - xo1end " << (len1 - xo1end) << "\n";
-
+*/
     memcpy(offspring.program, parent1.program, xo1start);
     memcpy(&offspring.program[xo1start], &parent2.program[xo2start], xo2end - xo2start);
     memcpy(&offspring.program[xo1start + (xo2end - xo2start)], &parent1.program[xo1end], len1 - xo1end);
 
-std::cout << "corssover e \n";
+/*
+    std::cout << "parent1\n";
+    parent1.print();
 
-    int lenny = offspring.traverse(0);
-    std::cout << "lenny " << lenny << "\n";
+    std::cout << "parent2\n";
+    parent2.print();
+
+    std::cout << "offsrping\n";
+    offspring.print();
+*/
+//std::cout << "corssover e \n";
+
+//    int lenny = offspring.total();//offspring.traverse(0);
+//    std::cout << "lenny " << lenny << "\n";
     
     return offspring;
+}
+
+void schema::print()
+{
+    for(int k=0;k<length;++k)
+    {
+        char p = program[k];
+
+        if(p == ADD) std::cout << "ADD ";
+        else if(p == SUB) std::cout << "SUB ";
+        else if(p == DIV) std::cout << "DIV ";
+        else if(p == MUL) std::cout << "MUL ";
+        else std::cout << ((int)p) << " ";
+        
+    }
+
+    std::cout << "\n";
 }
 
 schema schema::mutation(schema &parent, int varnumber, double pmut)
 {
       std::uniform_real_distribution<double> rand1{ 0, 1.0 };
 
-    int len = parent.traverse(0);
+    int len = parent.total();//parent.traverse(0);
     int i;
     int mutsite;
     schema parentcopy(parent);
@@ -174,28 +237,112 @@ schema schema::mutation(schema &parent, int varnumber, double pmut)
     return parentcopy;
 }
 
+/*
+  int schema::traverse(int buffercount ) {
+    if ( program[buffercount] < FSET_START )
+      return( ++buffercount );
+    
+    switch(program[buffercount]) {
+      case ADD: 
+      case SUB: 
+      case MUL: 
+      case DIV: 
+      return( traverse(traverse(++buffercount ) ) );
+      }
+    return( 0 ); // should never get here
+  }
+*/
+
+
 int schema::traverse(int buffercount)
 {
-    if(buffercount >=max) 
+    int len = total();
+
+    do
+    {
+        if(program[buffercount] < FSET_START) return ++buffercount;
+
+        //else ++buffercount;
+        ++buffercount;
+    }while((buffercount <  len)&&(buffercount < max));
+
+    return buffercount;
+}
+
+
+/*
+int schema::traverse(int buffercount)
+{
+    if(buffercount >=max - 1) 
     {
         std::cout << "traversed maxxed\n";
         return 0;
     }
 
-    if(program[buffercount] < FSET_START)
-        return buffercount+1;
+    //if(buffercount==0) std::cout << "suggarss\n";
+    if((program[buffercount] < FSET_START) || (program[buffercount] == 0))    
+    {
+        //std::cout << "bing " << buffercount << "\n";
+        return ++buffercount;
+    }
 
     switch(program[buffercount]) {
         case ADD: 
         case SUB:
         case MUL:
         case DIV:
-        return (traverse(traverse(buffercount+1)));
+        return traverse(++buffercount);//(traverse(traverse(++buffercount)));
     }
 
     return 0;
 }
+*/
+int schema::grow(int pos, int depth, int varnumber, int randnumber)
+{
+    //int pos = 0;
+    //length = 0;
+   // int depth = 5;
 
+    std::uniform_int_distribution<int> rand{ 0, 2 };
+    //bool running = true;
+
+    //`do
+    //{
+        char prim = (char)rand(generator);
+        if(pos >= max) return -1;
+        if(pos == 0) prim = 1;
+
+        if(prim == 0 || depth == 0)
+        {
+            std::uniform_int_distribution<int> randy{ 0, varnumber + randnumber };
+            prim = (char) randy(generator);
+            program[pos] = prim;
+            return pos + 1;
+           // ++length;
+            //running = false;
+        }
+        else
+        {
+            std::uniform_int_distribution<int> randi{ 0, FSET_END - FSET_START + 1 };
+            prim = (char)(randi(generator) + FSET_START);
+            if((prim == ADD)||(prim == SUB)||(prim == DIV)||(prim == MUL))
+            {
+                program[pos] = prim;            
+                int one_child = grow(pos+1,depth-1,varnumber,randnumber);
+                if(one_child < 0) return -1;
+                return grow(one_child,depth-1,varnumber,randnumber);
+                //++length;
+                //--depth;
+            }
+        }
+    //}while((running)&&(length < max));
+
+return 0;
+//return true;
+    //std::cout << "len " << length << "\n";
+}
+
+/*
 int schema::grow(int pos, int max, int depth, int varnumber, int randnumber)
 {
     std::uniform_int_distribution<int> rand{ 0, 2 };
@@ -229,6 +376,7 @@ int schema::grow(int pos, int max, int depth, int varnumber, int randnumber)
 
     return 0;
 }
+*/
 
 int schema::print_indiv(int buffercounter, int varnumber, double *x) 
 {
