@@ -3,6 +3,129 @@
 #include <fstream>
 #include <bits/stdc++.h>
 
+std::mt19937_64 bugger::schema::generator(std::random_device{}());
+
+void bugger::schema::reset(int total)
+{
+    init = false; cleanup();
+
+    max = total;
+    program = new char[max];
+    if(program == NULL) return;
+
+    clear();
+
+    init = true;
+}
+
+void bugger::schema::clear()
+{
+    length = 0; PC = 0;
+    memset(program, 0, max);    
+}
+
+int bugger::schema::traverse(int buffercount)
+{
+    if ( program[buffercount] < FSET_START )
+      return( ++buffercount );
+    
+    switch(program[buffercount]) {
+      case ADD: 
+      case SUB: 
+      case MUL: 
+      case DIV: 
+      return( traverse( traverse( ++buffercount ) ) );
+      }
+    return( 0 ); // should never get here
+}
+
+void bugger::schema::crossover(schema &parent1, schema &parent2)
+{
+        int xo1start, xo1end, xo2start, xo2end;
+    //char *offspring;
+    //schema offspring;
+    int len1 = parent1.traverse( 0 );
+    int len2 = parent2.traverse( 0 );
+    int lenoff;
+    
+    std::uniform_int_distribution<int> rand{ 0, len1 - 1 };
+
+    xo1start =  rand(generator);//rd.nextInt(len1);
+    xo1end = parent1.traverse( xo1start );
+    
+    std::uniform_int_distribution<int> rand2{ 0, len2 - 1 };
+
+    xo2start =  rand2(generator);//rd.nextInt(len2);
+    xo2end = parent2.traverse( xo2start );
+    
+    lenoff = xo1start + (xo2end - xo2start) + (len1-xo1end);
+
+    //offspring = new char[lenoff];
+
+    memcpy(program,parent1.program,xo1start);
+    memcpy(&program[xo1start],&parent2.program[xo2start],(xo2end - xo2start));
+    memcpy(&program[xo1start + (xo2end - xo2start)], &parent1.program[xo1end], (len1-xo1end));
+    
+
+}
+
+void bugger::schema::mutate(double pmut, int varnumber, int randomnumber)
+{
+        int len = traverse(0 ), i;
+    int mutsite;
+//    char *parentcopy = new char [len];
+    
+  //  memcpy( parentcopy, parent, len );
+  //schema parentcopy = parent;
+
+std::uniform_real_distribution<double> rand{ 0, 1.0 };
+std::uniform_int_distribution<int> rand2{ 0, varnumber+randomnumber - 1 };
+std::uniform_int_distribution<int> rand3{ 0, FSET_END - FSET_START };
+
+    //System.arraycopy( parent, 0, parentcopy, 0, len );
+
+    for (i = 0; i < len; i ++ ) {  
+      //if ( rd.nextDouble() < pmut ) {
+    if ( rand(generator) < pmut ) {
+      mutsite =  i;
+      if ( program[mutsite] < FSET_START )
+        program[mutsite] = (char) rand2(generator);//rd.nextInt(varnumber+randomnumber);
+      else
+        switch(program[mutsite]) {
+      	case ADD: 
+      	case SUB: 
+      	case MUL: 
+      	case DIV:
+           //parentcopy[mutsite] = (char) (rd.nextInt(FSET_END - FSET_START + 1) + FSET_START);
+           program[mutsite] = (char) rand3(generator);//(rd.nextInt(FSET_END - FSET_START + 1) + FSET_START);
+        }
+      }
+    }
+    //return( parentcopy );
+}
+
+void bugger::schema::copy(const schema &source)
+{
+    memcpy(program, source.program, source.max);
+    length = source.length;
+    max = source.max;
+}
+
+void bugger::schema::makeNull()
+{
+    //std::cout << "schame:: makeNull\n";
+    program = NULL;
+}
+
+void bugger::schema::cleanup()
+{
+    //std::cout << "schema::cleana\n";
+    if(program != NULL) delete[] program;
+    //std::cout << "schema::cleanb\n";
+}
+
+/* ******** */
+
 std::mt19937_64 bugger::tiny_gp::generator(std::random_device{}());
 
 double bugger::tiny_gp::fbestpop = 0.0;
@@ -10,6 +133,52 @@ double bugger::tiny_gp::favgpop = 0.0;
 double bugger::tiny_gp::PMUT_PER_NODE  = 0.05;
 double bugger::tiny_gp::CROSSOVER_PROB = 0.9;
 
+void bugger::tiny_gp::reset( string fname) 
+{
+    init = false; cleanup();
+
+    fitness =  new double[POPSIZE];
+    if(fitness == NULL) return;
+
+    setup_fitness(fname);
+
+    std::uniform_real_distribution<double> rand{ 0, 1.0 };
+
+    for ( int i = 0; i < FSET_START; i ++ )
+    {    
+        x[i]= (maxrandom-minrandom)*rand(generator)+minrandom;
+    } 
+    
+    //pop = new char*[POPSIZE];
+    pop = new schema[POPSIZE];
+    if(pop == NULL) return;
+
+    for (int i = 0; i < POPSIZE; i ++ ) 
+    {
+       create_random_indiv( pop[i], DEPTH );
+      fitness[i] = fitness_function( pop[i] );
+
+      //pop[i] = create_random_indiv( DEPTH );
+      //fitness[i] = fitness_function( pop[i] );
+    }
+    
+    init = true;
+    //pop = create_random_pop(POPSIZE, DEPTH, fitness );
+}
+
+/*
+  char **bugger::tiny_gp::create_random_pop(int n, int depth, double *fitness ) 
+  {
+    char **pop = new char*[n];
+    int i;
+    
+    for ( i = 0; i < n; i ++ ) {
+      pop[i] = create_random_indiv( depth );
+      fitness[i] = fitness_function( pop[i] );
+      }
+    return( pop );
+  }
+*/
 double bugger::tiny_gp::run() 
 { /* Interpreter */
       //output();
@@ -79,7 +248,7 @@ double bugger::tiny_gp::run()
     std::istringstream iss(line);
     std::vector<std::string> tokens(std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>());
 
-    std::cout << "filename " << filename << "\n";
+    //std::cout << "filename " << filename << "\n";
     std::vector<std::string>::iterator it = tokens.begin();
 
     varnumber = std::stoi(it[0]);
@@ -101,10 +270,10 @@ double bugger::tiny_gp::run()
          {
              targets[i,j++] = std::stod(*it);
 
-             std::cout << *it << ",";
+          //   std::cout << *it << ",";
          }
 
-         std::cout << "\n";
+//         std::cout << "\n";
     }
     
     in.close();
@@ -151,15 +320,17 @@ double bugger::tiny_gp::run()
     */
   }
 
-  double bugger::tiny_gp::fitness_function( char *Prog ) {
+  double bugger::tiny_gp::fitness_function( schema &source)//char *Prog ) 
+  {
     int i = 0, len;
     double result, fit = 0.0;
     
-    len = traverse( Prog, 0 );
+    len = traverse( source.program, 0 );
     for (i = 0; i < fitnesscases; i ++ ) {
       for (int j = 0; j < varnumber; j ++ )
           x[j] = targets[i,j];
-      program = Prog;
+      //program = Prog;
+      program = source.program;
       PC = 0;
       result = run();
       fit += abs( result - targets[i,varnumber]);
@@ -243,8 +414,10 @@ double bugger::tiny_gp::run()
   }
   
 
-  char * bugger::tiny_gp::create_random_indiv( int depth ) {
-    char *ind;
+  //char * bugger::tiny_gp::create_random_indiv( int depth ) {
+    void bugger::tiny_gp::create_random_indiv( schema &destination, int depth ) 
+      {
+    //char *ind;
     int len;
 
     len = grow( buffer, 0, MAX_LEN, depth );
@@ -252,29 +425,18 @@ double bugger::tiny_gp::run()
     while (len < 0 )
       len = grow( buffer, 0, MAX_LEN, depth );
 
-    ind = new char[len];
+    //ind = new char[len];
 
-    memcpy(ind,buffer,len);
+    //memcpy(ind,buffer,len);
+    memcpy(destination.program,buffer,len);
     //System.arraycopy(buffer, 0, ind, 0, len ); 
 
    // output(buffer);
-    return( ind );
+   // return( ind );
   }
 
-  char **bugger::tiny_gp::create_random_pop(int n, int depth, double *fitness ) 
-  {
-    char **pop = new char*[n];
-    int i;
-    
-    for ( i = 0; i < n; i ++ ) {
-      pop[i] = create_random_indiv( depth );
-      fitness[i] = fitness_function( pop[i] );
-      }
-    return( pop );
-  }
-
-
-  void bugger::tiny_gp::stats( double *fitness, char **pop, int gen ) 
+  //void bugger::tiny_gp::stats( double *fitness, char **pop, int gen ) 
+  void bugger::tiny_gp::stats( double *fitness, schema *pop, int gen ) 
   {
       std::uniform_int_distribution<int> rand{ 0, POPSIZE - 1 };
 
@@ -285,7 +447,7 @@ double bugger::tiny_gp::run()
     favgpop = 0.0;
 
     for ( i = 0; i < POPSIZE; i ++ ) {
-      node_count +=  traverse( pop[i], 0 );
+      node_count +=  traverse( pop[i].program, 0 );
       favgpop += fitness[i];
       if ( fitness[i] > fbestpop ) {
       best = i;
@@ -297,7 +459,7 @@ double bugger::tiny_gp::run()
     std::cout << "Generation=" << gen << " Avg Fitness=" << (-favgpop) <<
     		 " Best Fitness=" << (-fbestpop) << " Avg Size=" << avg_len << 
     		 "\nBest Individual: ";
-    print_indiv( pop[best], 0 );
+    print_indiv( pop[best].program, 0 );
     std::cout << "\n";
     //System.out.flush();
   }
@@ -337,7 +499,7 @@ double bugger::tiny_gp::run()
     }
     return( worst );
   }
-  
+  /*
   char *bugger::tiny_gp::crossover( char *parent1, char *parent2 ) {
     int xo1start, xo1end, xo2start, xo2end;
     char *offspring;
@@ -363,17 +525,41 @@ double bugger::tiny_gp::run()
     memcpy(&offspring[xo1start],&parent2[xo2start],(xo2end - xo2start));
     memcpy(&offspring[xo1start + (xo2end - xo2start)], &parent1[xo1end], (len1-xo1end));
     
-    /*
-    System.arraycopy( parent1, 0, offspring, 0, xo1start );
-    System.arraycopy( parent2, xo2start, offspring, xo1start,  
-    		  (xo2end - xo2start) );
-    System.arraycopy( parent1, xo1end, offspring, 
-    		  xo1start + (xo2end - xo2start), 
-    		  (len1-xo1end) );
-    */
+    
     return( offspring );
   }
-  
+  */
+/*
+  bugger::schema bugger::tiny_gp::crossover( schema &parent1, schema &parent2 ) {
+    int xo1start, xo1end, xo2start, xo2end;
+    //char *offspring;
+    schema offspring;
+    int len1 = traverse( parent1.program, 0 );
+    int len2 = traverse( parent2.program, 0 );
+    int lenoff;
+    
+    std::uniform_int_distribution<int> rand{ 0, len1 - 1 };
+
+    xo1start =  rand(generator);//rd.nextInt(len1);
+    xo1end = traverse( parent1.program, xo1start );
+    
+    std::uniform_int_distribution<int> rand2{ 0, len2 - 1 };
+
+    xo2start =  rand2(generator);//rd.nextInt(len2);
+    xo2end = traverse( parent2.program, xo2start );
+    
+    lenoff = xo1start + (xo2end - xo2start) + (len1-xo1end);
+
+    //offspring = new char[lenoff];
+
+    memcpy(offspring.program,parent1.program,xo1start);
+    memcpy(&offspring.program[xo1start],&parent2.program[xo2start],(xo2end - xo2start));
+    memcpy(&offspring.program[xo1start + (xo2end - xo2start)], &parent1.program[xo1end], (len1-xo1end));
+    
+    return( offspring );
+  }
+  */
+  /*
   char * bugger::tiny_gp::mutation( char *parent, double pmut ) 
   {
     int len = traverse( parent, 0 ), i;
@@ -407,7 +593,43 @@ std::uniform_int_distribution<int> rand3{ 0, FSET_END - FSET_START };
     }
     return( parentcopy );
   }
-  
+  */
+ /*
+  bugger::schema bugger::tiny_gp::mutation(schema &parent, double pmut ) 
+  {
+    int len = traverse( parent.program, 0 ), i;
+    int mutsite;
+//    char *parentcopy = new char [len];
+    
+  //  memcpy( parentcopy, parent, len );
+  schema parentcopy = parent;
+
+std::uniform_real_distribution<double> rand{ 0, 1.0 };
+std::uniform_int_distribution<int> rand2{ 0, varnumber+randomnumber - 1 };
+std::uniform_int_distribution<int> rand3{ 0, FSET_END - FSET_START };
+
+    //System.arraycopy( parent, 0, parentcopy, 0, len );
+
+    for (i = 0; i < len; i ++ ) {  
+      //if ( rd.nextDouble() < pmut ) {
+    if ( rand(generator) < pmut ) {
+      mutsite =  i;
+      if ( parentcopy.program[mutsite] < FSET_START )
+        parentcopy.program[mutsite] = (char) rand2(generator);//rd.nextInt(varnumber+randomnumber);
+      else
+        switch(parentcopy.program[mutsite]) {
+      	case ADD: 
+      	case SUB: 
+      	case MUL: 
+      	case DIV:
+           //parentcopy[mutsite] = (char) (rd.nextInt(FSET_END - FSET_START + 1) + FSET_START);
+           parentcopy.program[mutsite] = (char) rand3(generator);//(rd.nextInt(FSET_END - FSET_START + 1) + FSET_START);
+        }
+      }
+    }
+    return( parentcopy );
+  }
+  */
   void bugger::tiny_gp::print_parms() {
    std::cout << "-- TINY GP (Java version) --\n";
    std::cout << "SEED=" << seed << "\nMAX_LEN=" << MAX_LEN <<
@@ -421,26 +643,13 @@ std::uniform_int_distribution<int> rand3{ 0, FSET_END - FSET_START };
      	    "\n----------------------------------\n";
   }
 
-  bugger::tiny_gp::tiny_gp( string fname ) {
-    fitness =  new double[POPSIZE];
-    //seed = s;
-    //if ( seed >= 0 )
-        //rd.setSeed(seed);
-    setup_fitness(fname);
-
-std::uniform_real_distribution<double> rand{ 0, 1.0 };
-
-    for ( int i = 0; i < FSET_START; i ++ )
-      //x[i]= (maxrandom-minrandom)*rd.nextDouble()+minrandom;
-      x[i]= (maxrandom-minrandom)*rand(generator)+minrandom;
-    pop = create_random_pop(POPSIZE, DEPTH, fitness );
-  }
 
   void bugger::tiny_gp::evolve() {
       std::uniform_real_distribution<double> rand{ 0, 1.0 };
     int gen = 0, indivs, offspring, parent1, parent2, parent;
     double newfit;
-    char *newind;
+    //char *newind;
+    schema newind;
     print_parms();
     stats( fitness, pop, 0 );
     for ( gen = 1; gen < GENERATIONS; gen ++ ) {
@@ -454,11 +663,16 @@ std::uniform_real_distribution<double> rand{ 0, 1.0 };
           if ( rand(generator) < CROSSOVER_PROB  ) {
         parent1 = tournament( fitness, TSIZE );
         parent2 = tournament( fitness, TSIZE );
-        newind = crossover( pop[parent1],pop[parent2] );
+        //newind.program = crossover( pop[parent1].program,pop[parent2].program );
+        //newind = crossover( pop[parent1],pop[parent2] );
+        newind.crossover(pop[parent1],pop[parent2]);
       }
       else {
         parent = tournament( fitness, TSIZE );
-        newind = mutation( pop[parent], PMUT_PER_NODE );
+        //newind.program = mutation( pop[parent].program, PMUT_PER_NODE );
+        //newind= mutation( pop[parent], PMUT_PER_NODE );
+        newind.copy(pop[parent]);
+        newind.mutate(PMUT_PER_NODE, varnumber, randomnumber);
       }
       newfit = fitness_function( newind );
       offspring = negative_tournament( fitness, TSIZE );
