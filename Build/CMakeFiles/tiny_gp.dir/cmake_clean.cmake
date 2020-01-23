@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/tiny_gp.dir/bugger.cpp.o"
   "CMakeFiles/tiny_gp.dir/genetic.cpp.o"
   "CMakeFiles/tiny_gp.dir/main.cpp.o"
   "CMakeFiles/tiny_gp.dir/schema.cpp.o"

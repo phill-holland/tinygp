@@ -1,12 +1,13 @@
 #include <iostream>
 #include <string>
 #include "genetic.h"
+#include "bugger.h"
 
 int main(int argc, char *argv[])
 {
     std::string filename = "sin-data.txt";
     
-    tiny_gp *gp = new tiny_gp(filename);
+    bugger::tiny_gp *gp = new bugger::tiny_gp(filename);
     if(gp != NULL)
     {
         gp->evolve();

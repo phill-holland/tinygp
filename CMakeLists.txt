@@ -12,6 +12,7 @@ set(CMAKE_BUILD_TYPE Debug)
 set(SOURCE 
 schema.cpp
 genetic.cpp
+bugger.cpp
 main.cpp)
 
 include_directories(/Library/Developer/CommandLineTools/usr/include)

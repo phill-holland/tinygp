@@ -237,11 +237,13 @@ schema schema::mutation(schema &parent, int varnumber, double pmut)
     return parentcopy;
 }
 
-/*
+
   int schema::traverse(int buffercount ) {
     if ( program[buffercount] < FSET_START )
       return( ++buffercount );
     
+    if(buffercount >= length - 1) return buffercount;
+
     switch(program[buffercount]) {
       case ADD: 
       case SUB: 
@@ -251,9 +253,9 @@ schema schema::mutation(schema &parent, int varnumber, double pmut)
       }
     return( 0 ); // should never get here
   }
-*/
 
 
+/*
 int schema::traverse(int buffercount)
 {
     int len = total();
@@ -268,7 +270,7 @@ int schema::traverse(int buffercount)
 
     return buffercount;
 }
-
+*/
 
 /*
 int schema::traverse(int buffercount)
