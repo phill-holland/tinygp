@@ -104,6 +104,143 @@ std::uniform_int_distribution<int> rand3{ 0, FSET_END - FSET_START };
     //return( parentcopy );
 }
 
+int bugger::schema::grow(int pos, int max, int depth,int varnumber, int randomnumber) 
+  {
+    std::uniform_int_distribution<int> rand{ 0, 1 };//2 };
+
+    char prim = (char)rand(generator);
+    //char prim = (char) rd.nextInt(2);
+    int one_child;
+
+    if ( pos >= max ) 
+      return( -1 );
+    
+    if ( pos == 0 )
+      prim = 1;
+    
+    if ( prim == 0 || depth == 0 ) 
+    {
+     std::uniform_int_distribution<int> rand2{ 0, varnumber + randomnumber - 1 };//2 };
+
+      //prim = (char) rd.nextInt(varnumber + randomnumber);
+      prim = (char)rand2(generator);
+      program[pos] = prim;
+      return(pos+1);
+      }
+    else  
+    {
+        std::uniform_int_distribution<int> rand3{ 0, FSET_END - FSET_START };//2 };
+        prim = (char)rand3(generator) + FSET_START;
+      //prim = (char) (rd.nextInt(FSET_END - FSET_START + 1) + FSET_START);
+      switch(prim) {
+      case ADD: 
+      case SUB: 
+      case MUL: 
+      case DIV:
+        program[pos] = prim;
+	one_child = grow(pos+1, max,depth-1, varnumber, randomnumber);
+	if ( one_child < 0 ) 
+		return( -1 );
+        return( grow(one_child, max,depth-1, varnumber, randomnumber ) );
+      }
+    }
+    return( 0 ); // should never get here
+  }
+  
+  int bugger::schema::print(int buffercounter, double *x, int varnumber) 
+  {
+    int a1=0, a2;
+    if ( program[buffercounter] < FSET_START ) {
+      if ( program[buffercounter] < varnumber )
+        std::cout <<  "X" << (program[buffercounter] + 1 ) <<  " ";
+      else
+        std::cout << x[program[buffercounter]];
+      return( ++buffercounter );
+      }
+    switch(program[buffercounter]) {
+      case ADD: std::cout << "(";
+        a1=print( ++buffercounter,x,varnumber); 
+        std::cout << " + "; 
+        break;
+      case SUB: std::cout << "(";
+        a1=print( ++buffercounter,x,varnumber); 
+        std::cout << " - "; 
+        break;
+      case MUL: std::cout << "(";
+        a1=print( ++buffercounter,x,varnumber); 
+        std::cout <<  " * "; 
+        break;
+      case DIV: std::cout <<  "(";
+        a1=print( ++buffercounter,x,varnumber); 
+        std::cout << " / "; 
+        break;
+      }
+    a2=print( a1,x,varnumber); 
+    std::cout << ")"; 
+    return( a2);
+  }
+  
+
+  //char * bugger::tiny_gp::create_random_indiv( int depth ) {
+    void bugger::schema::create(int depth, int varnumber, int randomnumber) 
+      {
+    //char *ind;
+    int len;
+
+    len = grow(0, MAX, depth, varnumber, randomnumber);
+
+    while (len < 0 )
+      len = grow(0, MAX, depth, varnumber, randomnumber);
+
+    //ind = new char[len];
+
+    //memcpy(ind,buffer,len);
+    //memcpy(destiprogram,buffer,len);
+    //System.arraycopy(buffer, 0, ind, 0, len ); 
+
+   // output(buffer);
+   // return( ind );
+  }
+
+double bugger::schema::run(double *x) 
+{ /* Interpreter */
+      //output();
+    char primitive = program[PC++];
+    if ( primitive < FSET_START )
+      return(x[primitive]);
+    switch ( primitive ) {
+      case ADD : return( run(x) + run(x) );
+      case SUB : return( run(x) - run(x) );
+      case MUL : return( run(x) * run(x) );
+      case DIV : { 
+        double num = run(x), den = run(x);
+        if ( abs( den ) <= 0.001 ) 
+          return( num );
+        else 
+          return( num / den );
+        }
+      }
+    return( 0.0 ); // should never get here
+  }
+          
+  double bugger::schema::fitness(int fitnesscases, int varnumber, double *x, double *targets)
+  {
+    int i = 0, len;
+    double result, fit = 0.0;
+    
+    len = traverse(0);
+    for (i = 0; i < fitnesscases; i ++ ) {
+      for (int j = 0; j < varnumber; j ++ )
+          x[j] = targets[i,j];
+      //program = Prog;
+      //program = source.program;
+      PC = 0;
+      result = run(x);
+      fit += abs( result - targets[i,varnumber]);
+      }
+    return(-fit );
+  }
+
 void bugger::schema::copy(const schema &source)
 {
     memcpy(program, source.program, source.max);
@@ -155,8 +292,10 @@ void bugger::tiny_gp::reset( string fname)
 
     for (int i = 0; i < POPSIZE; i ++ ) 
     {
-       create_random_indiv( pop[i], DEPTH );
-      fitness[i] = fitness_function( pop[i] );
+       //create_random_indiv( pop[i], DEPTH );
+       pop[i].create(DEPTH, varnumber, randomnumber);
+      //fitness[i] = fitness_function( pop[i] );
+      fitness[i] = pop[i].run(x);
 
       //pop[i] = create_random_indiv( DEPTH );
       //fitness[i] = fitness_function( pop[i] );
@@ -179,8 +318,9 @@ void bugger::tiny_gp::reset( string fname)
     return( pop );
   }
 */
+/*
 double bugger::tiny_gp::run() 
-{ /* Interpreter */
+{ 
       //output();
     char primitive = program[PC++];
     if ( primitive < FSET_START )
@@ -199,7 +339,7 @@ double bugger::tiny_gp::run()
       }
     return( 0.0 ); // should never get here
   }
-          
+          */
   int bugger::tiny_gp::traverse( char *buffer, int buffercount ) {
     if ( buffer[buffercount] < FSET_START )
       return( ++buffercount );
@@ -320,6 +460,7 @@ double bugger::tiny_gp::run()
     */
   }
 
+/*
   double bugger::tiny_gp::fitness_function( schema &source)//char *Prog ) 
   {
     int i = 0, len;
@@ -337,7 +478,8 @@ double bugger::tiny_gp::run()
       }
     return(-fit );
   }
-
+*/
+/*
   int bugger::tiny_gp::grow( char *buffer, int pos, int max, int depth ) 
   {
     std::uniform_int_distribution<int> rand{ 0, 1 };//2 };
@@ -380,7 +522,8 @@ double bugger::tiny_gp::run()
     }
     return( 0 ); // should never get here
   }
-  
+  */
+ /* 
   int bugger::tiny_gp::print_indiv( char *buffer, int buffercounter ) {
     int a1=0, a2;
     if ( buffer[buffercounter] < FSET_START ) {
@@ -412,8 +555,8 @@ double bugger::tiny_gp::run()
     std::cout << ")"; 
     return( a2);
   }
-  
-
+  */
+/*
   //char * bugger::tiny_gp::create_random_indiv( int depth ) {
     void bugger::tiny_gp::create_random_indiv( schema &destination, int depth ) 
       {
@@ -434,7 +577,7 @@ double bugger::tiny_gp::run()
    // output(buffer);
    // return( ind );
   }
-
+*/
   //void bugger::tiny_gp::stats( double *fitness, char **pop, int gen ) 
   void bugger::tiny_gp::stats( double *fitness, schema *pop, int gen ) 
   {
@@ -459,7 +602,8 @@ double bugger::tiny_gp::run()
     std::cout << "Generation=" << gen << " Avg Fitness=" << (-favgpop) <<
     		 " Best Fitness=" << (-fbestpop) << " Avg Size=" << avg_len << 
     		 "\nBest Individual: ";
-    print_indiv( pop[best].program, 0 );
+    //print_indiv( pop[best].program, 0 );
+    pop[best].print(0, x, varnumber);
     std::cout << "\n";
     //System.out.flush();
   }
@@ -674,7 +818,8 @@ std::uniform_int_distribution<int> rand3{ 0, FSET_END - FSET_START };
         newind.copy(pop[parent]);
         newind.mutate(PMUT_PER_NODE, varnumber, randomnumber);
       }
-      newfit = fitness_function( newind );
+      //newfit = newind.fitness(fitnesscases, varnumber,x,targets);//fitness_function( newind );
+      newfit = fitness_function(newind);
       offspring = negative_tournament( fitness, TSIZE );
       pop[offspring] = newind;
       fitness[offspring] = newfit;

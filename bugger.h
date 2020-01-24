@@ -44,6 +44,16 @@ public:
     void crossover(schema &parent1, schema &parent2);
     void mutate(double pmut, int varnumber, int randomnumber);
 
+    double run(double *x);
+    double fitness(int fitnesscases, int varnumber, double *x, double *targets);
+
+    // ***
+    int grow(int pos, int max, int depth, int varnumber, int randomnumber);  
+    int print(int buffercounter, double *x, int varnumber);
+
+    void create(int depth, int varnumber, int randomnumber);
+    // ***
+
     void copy(const schema &source);
 
 public:
@@ -102,7 +112,7 @@ public:
     bool initalised() { return init; }
     void reset(string fname);
 
-  double run();
+//  double run();
           
   int traverse( char *buffer, int buffercount );
 
@@ -111,14 +121,14 @@ public:
   void setup_fitness(string filename);
 
   //double fitness_function( char *Prog );
-  double fitness_function(schema &source);
+  //double fitness_function(schema &source);
 
-  int grow( char *buffer, int pos, int max, int depth );
+  //int grow( char *buffer, int pos, int max, int depth );
   
-  int print_indiv( char *buffer, int buffercounter );
+  //int print_indiv( char *buffer, int buffercounter );
 
   //char *create_random_indiv( int depth );
-  void create_random_indiv( schema &destination, int depth );
+  //ßvoid create_random_indiv( schema &destination, int depth );
 
   //char **create_random_pop(int n, int depth, double *fitness );
 
