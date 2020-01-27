@@ -86,7 +86,7 @@ void genetic::reset(schema::factory *factory, string filename)
     in.close();
   }
 
-  void genetic::stats(double *fitness, int gen) 
+  void genetic::stats(int gen) 
   {
     std::uniform_int_distribution<int> rand{ 0, POPSIZE - 1 };
 
@@ -116,14 +116,14 @@ void genetic::reset(schema::factory *factory, string filename)
     std::cout << "\n";
   }
 
-int genetic::tournament(double *fitness, int tsize) 
+int genetic::tournament() 
 {
     std::uniform_int_distribution<int> rand{ 0, POPSIZE - 1 };
     int best = rand(generator);
     int i, competitor;
     double  fbest = -1.0e34;
 
-    for ( i = 0; i < tsize; i ++ ) 
+    for ( i = 0; i < TSIZE; i ++ ) 
     {
         competitor = rand(generator);
         if (fitness[competitor] > fbest) 
@@ -136,7 +136,7 @@ int genetic::tournament(double *fitness, int tsize)
     return best;
 }
   
-int genetic::negative_tournament(double *fitness, int tsize) 
+int genetic::negative_tournament() 
 {
     std::uniform_int_distribution<int> rand{ 0, POPSIZE - 1 };
 
@@ -144,7 +144,7 @@ int genetic::negative_tournament(double *fitness, int tsize)
     int i, competitor;
     double fworst = 1e34;
 
-    for ( i = 0; i < tsize; i ++ ) 
+    for ( i = 0; i < TSIZE; i ++ ) 
     {
         competitor = rand(generator);
         if (fitness[competitor] < fworst) 
@@ -179,7 +179,7 @@ void genetic::evolve()
     double newfit;
 
     print_parms();
-    stats(fitness, 0);
+    stats(0);
 
     for (gen = 1; gen < GENERATIONS; gen ++) 
     {    
@@ -191,17 +191,17 @@ void genetic::evolve()
         
         for (indivs = 0; indivs < POPSIZE; indivs ++) 
         {
-            offspring = negative_tournament(fitness, TSIZE);
+            offspring = negative_tournament();
 
             if (rand(generator) < CROSSOVER_PROB) 
             {
-                parent1 = tournament(fitness, TSIZE);
-                parent2 = tournament(fitness, TSIZE);
+                parent1 = tournament();
+                parent2 = tournament();
                 pop[offspring]->crossover(pop[parent1],pop[parent2]);
             }
             else 
             {
-                parent = tournament(fitness, TSIZE);
+                parent = tournament();
                 pop[offspring]->copy(pop[parent]);
                 pop[offspring]->mutate(PMUT_PER_NODE, varnumber, randomnumber);
 
@@ -212,7 +212,7 @@ void genetic::evolve()
             fitness[offspring] = newfit;        
         }
 
-    stats(fitness, gen);
+    stats(gen);
 }
 
 std::cout << "PROBLEM *NOT* SOLVED\n";

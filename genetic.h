@@ -54,10 +54,10 @@ public:
     
     void load(string filename);
   
-    void stats(double *fitness, int gen);
+    void stats(int gen);
 
-    int tournament(double *fitness, int tsize);
-    int negative_tournament(double *fitness, int tsize);
+    int tournament();
+    int negative_tournament();
   
     void print_parms();
 
