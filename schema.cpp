@@ -186,7 +186,7 @@ void schema::schema::create(int depth, int varnumber, int randomnumber)
 double schema::schema::run(double *x) 
 {
     char primitive = program[PC++];
-    if ( primitive < FSET_START )
+    if (primitive < FSET_START)
       return(x[primitive]);
     switch (primitive) 
     {
