@@ -1,18 +1,27 @@
 #include <iostream>
 #include <string>
 #include "genetic.h"
-#include "bugger.h"
+
+class factory : public schema::factory
+{
+public:
+    schema::base *create()
+    {
+        return new schema::schema();
+    }
+};
 
 int main(int argc, char *argv[])
 {
     std::string filename = "sin-data.txt";
-    
-    bugger::tiny_gp *gp = new bugger::tiny_gp(filename);
+    factory f;
+
+    genetic *gp = new genetic(&f, filename);
     if(gp != NULL)
     {
-        gp->evolve();
-
+        if(gp->initalised()) gp->evolve();
         delete gp;
     }
+
     return 0;
 }

@@ -123,33 +123,6 @@ tiny_gp/fast:
 	$(MAKE) -f CMakeFiles/tiny_gp.dir/build.make CMakeFiles/tiny_gp.dir/build
 .PHONY : tiny_gp/fast
 
-bugger.o: bugger.cpp.o
-
-.PHONY : bugger.o
-
-# target to build an object file
-bugger.cpp.o:
-	$(MAKE) -f CMakeFiles/tiny_gp.dir/build.make CMakeFiles/tiny_gp.dir/bugger.cpp.o
-.PHONY : bugger.cpp.o
-
-bugger.i: bugger.cpp.i
-
-.PHONY : bugger.i
-
-# target to preprocess a source file
-bugger.cpp.i:
-	$(MAKE) -f CMakeFiles/tiny_gp.dir/build.make CMakeFiles/tiny_gp.dir/bugger.cpp.i
-.PHONY : bugger.cpp.i
-
-bugger.s: bugger.cpp.s
-
-.PHONY : bugger.s
-
-# target to generate assembly for a file
-bugger.cpp.s:
-	$(MAKE) -f CMakeFiles/tiny_gp.dir/build.make CMakeFiles/tiny_gp.dir/bugger.cpp.s
-.PHONY : bugger.cpp.s
-
 genetic.o: genetic.cpp.o
 
 .PHONY : genetic.o
@@ -240,9 +213,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... tiny_gp"
-	@echo "... bugger.o"
-	@echo "... bugger.i"
-	@echo "... bugger.s"
 	@echo "... genetic.o"
 	@echo "... genetic.i"
 	@echo "... genetic.s"

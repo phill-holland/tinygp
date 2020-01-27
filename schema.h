@@ -3,61 +3,84 @@
 #ifndef SCHEMA
 #define SCHEMA
 
-class schema
+namespace schema
 {
-    static const int ADD = 110;
-    static const int SUB = 111;
-    static const int MUL = 112;
-    static const int DIV = 113;
+    class base
+    {
+    public:
+        virtual int traverse(int buffercount) = 0;
+        virtual void crossover(base *parent1, base *parent2) = 0;
+        virtual void mutate(double pmut, int varnumber, int randomnumber) = 0;
 
-    static const int FSET_START = ADD;
-    static const int FSET_END = DIV;
+        virtual double run(double *x) = 0;
+        virtual double fitness(int fitnesscases, int varnumber, double *x, double *targets) = 0;
 
-    static std::mt19937_64 generator;
-    const static int MAX = 4095;
+        virtual int print(int buffercounter, double *x, int varnumber) = 0;
+        virtual void create(int depth, int varnumber, int randomnumber) = 0;
 
-    char *program;
+        virtual void copy(base *source) = 0;
+    };
 
-    int PC;
+    class factory
+    {
+    public:
+        virtual base *create() = 0;
+    };
 
-    int max, length;    
-    bool init;
+    class schema : public base
+    {
+        static const int ADD = 110;
+        static const int SUB = 111;
+        static const int MUL = 112;
+        static const int DIV = 113;
 
-public:
-    schema(int total = MAX) { makeNull(); reset(total); }
-    schema(const schema &source) { makeNull(); reset(source.max); copy(source); }
-    ~schema() { cleanup(); }
+        static const int FSET_START = ADD;
+        static const int FSET_END = DIV;
 
-    bool initalised() { return init; }
-    void reset(int total);
+        static std::mt19937_64 generator;
+        const static int MAX = 10000;
 
-    void clear();
-    void create(int depth, int varnumber, int randnumber);
-    
-    double run(double *x);
-    double fitness(int fitnesscases, int varnumber, double *x, double *targets);
+        int PC;
 
-    static schema crossover(schema &parent1, schema &parent2);
-    static schema mutation(schema &parent, int varnumber, double pmut);
+        int max, length;    
+        bool init;
 
-    int total() { return length; }
-    
-//protected:
-    int traverse(int buffercount);
-    int grow(int pos, int depth, int varnumber, int randnumber);
-    //int grow(int pos, int max, int depth, int varnumber, int randnumber);
-    
-    void print();
-    int print_indiv(int buffercounter, int varnumber, double *x);
+    public:
+        char *program;
 
-    void copy(const schema &source);
+    public:
+        schema(int total = MAX) { makeNull(); reset(total); }
+        schema(const schema &source) { makeNull(); reset(source.max); copy(source); }
+        ~schema() { cleanup(); }
 
-public:
-    schema operator=(const schema &src) { clear(); copy(src); return *this; }
+        bool initalised() { return init; }
+        void reset(int total);
 
-protected:
-    void makeNull();
-    void cleanup();
+        void clear();
+        int total() { return length; }
+        
+        int traverse(int buffercount);
+        void crossover(schema::base *parent1, schema::base *parent2);
+        void mutate(double pmut, int varnumber, int randomnumber);
+
+        double run(double *x);
+        double fitness(int fitnesscases, int varnumber, double *x, double *targets);
+
+        int grow(int pos, int max, int depth, int varnumber, int randomnumber);  
+        int print(int buffercounter, double *x, int varnumber);
+
+        void create(int depth, int varnumber, int randomnumber);
+
+        void copy(const schema &source);
+        void copy(schema::base *source);
+
+    public:
+        schema operator=(const schema &src) { clear(); copy(src); return *this; }
+
+    protected:
+        void makeNull();
+        void cleanup();
+    };
 };
 
 #endif
