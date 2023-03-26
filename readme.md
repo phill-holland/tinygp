@@ -1,6 +1,6 @@
 # TinyGP
 
-Reimplementation of JAVA Genetic Algorithm Example Program into C++.
+Reimplementation of JAVA Genetic Algorithm Example Program into C++ (original reference from Riccaro Poli, reference below).
 
 This example uses a genetic algorithm to find the answer to a simple mathematical problem, supporting the following grammar;
 
