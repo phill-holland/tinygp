@@ -13,7 +13,7 @@ public:
 
 int main(int argc, char *argv[])
 {
-    std::string filename = "sin-data.txt";
+    std::string filename = "data/sin-data.txt";
     factory f;
 
     genetic *gp = new genetic(&f, filename);
